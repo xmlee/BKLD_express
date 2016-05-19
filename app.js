@@ -4,47 +4,44 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
 var routes = require('./routes/index');
-var users = require('./routes/users');
+// var settings = require('./node_modules/settings');
+var flash = require('connect-flash')
+var db = require('./node_modules/dao/db');
+// var users = require('./routes/users');
+var session = require('express-session');
+var mysqlStore = require('connect-mysql')(session);
 
 var app = express();  //生成一个express实例app
 
-// view engine setup
-//设置views文件夹为存放视图文件的目录，即存放模板文件的地方
-//_dirname为全局变量，存储当前正在执行的脚本所在的目录。
+app.set('port',process.env.PORT || 4000);
 app.set('views', path.join(__dirname, 'views'));
-//设置视图模板引擎为ejs。
 app.set('view engine', 'ejs');
-
-// uncomment after placing your favicon in /public
-//设置public/favicon.ico为favicon图标
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-//加载日志中间件
+app.use(flash());
 app.use(logger('dev'));
-//加载解析json的中间件
 app.use(bodyParser.json());
-//加载解析urlencoded请求体的中间件
-app.use(bodyParser.urlencoded({ extended: false }));
-//加载解析cookie的中间件
-app.use(cookieParser());
-//设置public文件夹为存放静态文件的目录
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser('An'));
+app.use(session({
+  secret: 'an',
+  resave: false,
+  saveUninitialized:true
+}));
+
 app.use(express.static(path.join(__dirname, 'public')));
 
-//下面两个语句是路由控制器
-app.use('/', routes);
-app.use('/users', users);
+routes(app);
 
-// 捕获404错误，并转发到错误处理器
+app.listen(app.get('port'),function(){
+  console.log('BKLD_express server listening on port' + app.get('port'));
+});
+
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
 
-// error handlers
-
-// 开发环境下的错误处理器，将错误信息渲染error模板并显示到浏览器中
 if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
@@ -55,7 +52,6 @@ if (app.get('env') === 'development') {
   });
 }
 
-// 生产环境下的错误处理器，不会将错误信息泄露给用户
 app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error', {
@@ -64,11 +60,8 @@ app.use(function(err, req, res, next) {
   });
 });
 
-//导出app实例供其他模块调用
 module.exports = app;
 
-
-//解释：这里我们通过require()加载了express、path等模块，以及routes文件夹下的index.js和users.js路由文件
 
 
 

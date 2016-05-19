@@ -16,14 +16,14 @@ var http = require('http');
  */
 
 //设置端口号
-var port = normalizePort(process.env.PORT || '3000');
+var port = normalizePort(process.env.PORT || '4000');
 app.set('port', port);
 
 /**
  * Create HTTP server.
  */
 
-//启动工程并监听3000端口，成功后打印Express server listening on the port 3000
+//启动工程并监听4000端口，成功后打印Express server listening on the port 4000
 var server = http.createServer(app);
 
 /**

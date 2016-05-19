@@ -1,0 +1,89 @@
+路由规则：
+    express封装了多种http请求方式，我们主要只使用get和post两种，
+    即app.get()和app.post().
+    app.get()和app.post()的第一个参数都为请求的路径，第二个参数
+    为处理请求的回调函数，回调函数有两个参数，分别是req和res，代
+    表请求信息和响应信息。路径请求及对应的获取路径有以下几种形式：
+①req.query
+// GET /search?q=tobi+ferret
+req.query.q
+// => "tobi ferret"
+
+// GET /shoes?order=desc&shoe[color]=blue&shoe[type]=converse
+req.query.order
+// => "desc"
+
+req.query.shoe.color
+// => "blue"
+
+req.query.shoe.type
+// => "converse"
+②req.body
+// POST user[name]=tobi&user[email]=tobi@learnboost.com
+req.body.user.name
+// => "tobi"
+
+req.body.user.email
+// => "tobi@learnboost.com"
+
+// POST { "name": "tobi" }
+req.body.name
+// => "tobi"
+③req.params
+// GET /user/tj
+req.params.name
+// => "tj"
+
+// GET /file/javascripts/jquery.js
+req.params[0]
+// => "javascripts/jquery.js"
+req.param(name)
+
+// ?name=tobi
+
+④req.param('name')
+// => "tobi"
+
+// POST name=tobi
+req.param('name')
+// => "tobi"
+
+// /user/tobi for /user/:name
+req.param('name')
+// => "tobi"
+不难看出：
+
+req.query： 处理 get 请求，获取 get 请求参数
+req.params： 处理 /:xxx 形式的 get 或 post 请求，获取请求参数
+req.body： 处理 post 请求，获取 post 请求体
+req.param()： 处理 get 和 post 请求，但查找优先级由高到低为 req.params→req.body→req.query
+
+    当我们访问 localhost:3000/nswbmw 这种不存在的页面时就会显示在页面上，访问不存在。
+这是因为不存在 /nswbmw 的路由规则，而且它也不是一个 public 目录下的文件，所以
+express 返回了 404 Not Found 的错误。下面我们来添加这条路由规则，使得当访问
+localhost:3000/nswbmw 时，页面显示 hello,world!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
